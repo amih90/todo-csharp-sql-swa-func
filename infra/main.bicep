@@ -141,6 +141,8 @@ module keyVault './core/security/keyvault.bicep' = {
     location: location
     tags: tags
     principalId: principalId
+    enabledForDeployment: true
+    enabledForTemplateDeployment: true
   }
 }
 
