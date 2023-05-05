@@ -11,7 +11,7 @@ param serviceName string = 'api'
 param storageAccountName string
 
 module api '../core/host/functions.bicep' = {
-  name: '${serviceName}-functions-dotnet-isolated-module'
+  name: '${serviceName}-functions-dotnet-module'
   params: {
     name: name
     location: location
