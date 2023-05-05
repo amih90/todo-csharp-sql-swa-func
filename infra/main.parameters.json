@@ -19,6 +19,9 @@
     },
     "useAPIM": {
       "value": "${USE_APIM=false}"
+    },
+    "useGenevaAgent": {
+      "value": "${USE_GENEVA_AGENT=false}"
     }
   }
 }
