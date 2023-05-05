@@ -3,6 +3,10 @@ param location string = resourceGroup().location
 param tags object = {}
 
 param principalId string = ''
+param enableSoftDelete bool = false
+param enabledForDeployment bool = false
+param enabledForTemplateDeployment bool = false
+param enabledForDiskEncryption bool = false
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: name
@@ -18,6 +22,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
         tenantId: subscription().tenantId
       }
     ] : []
+    enableSoftDelete: enableSoftDelete
+    enabledForDeployment: enabledForDeployment
+    enabledForTemplateDeployment: enabledForTemplateDeployment
+    enabledForDiskEncryption: enabledForDiskEncryption
   }
 }
 
