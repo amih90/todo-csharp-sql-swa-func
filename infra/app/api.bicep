@@ -11,18 +11,18 @@ param serviceName string = 'api'
 param storageAccountName string
 
 module api '../core/host/functions.bicep' = {
-  name: '${serviceName}-functions-dotnet-module'
+  name: '${serviceName}-functions-dotnet-isolated-module'
   params: {
     name: name
     location: location
     tags: union(tags, { 'azd-service-name': serviceName })
     allowedOrigins: allowedOrigins
-    alwaysOn: false
+    alwaysOn: true
     appSettings: appSettings
     applicationInsightsName: applicationInsightsName
     appServicePlanId: appServicePlanId
     keyVaultName: keyVaultName
-    runtimeName: 'dotnet'
+    runtimeName: 'dotnet-isolated'
     runtimeVersion: '6.0'
     storageAccountName: storageAccountName
     scmDoBuildDuringDeployment: false
