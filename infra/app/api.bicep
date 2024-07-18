@@ -17,7 +17,7 @@ module api '../core/host/functions.bicep' = {
     location: location
     tags: union(tags, { 'azd-service-name': serviceName })
     allowedOrigins: allowedOrigins
-    alwaysOn: false
+    alwaysOn: true
     appSettings: appSettings
     applicationInsightsName: applicationInsightsName
     appServicePlanId: appServicePlanId

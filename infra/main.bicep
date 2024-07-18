@@ -29,6 +29,20 @@ param apimServiceName string = ''
 @description('Flag to use Azure API Management to mediate the calls between the Web frontend and the backend API')
 param useAPIM bool = false
 
+// Geneva monitoring params
+@description('Flag to use Geneva Monitoring Agent')
+param useGenevaAgent bool = false
+param genevaKeyVaultSubscriptionId string = ''
+param genevaKeyVaultResourceGroupName string = ''
+param genevaKeyVaultName string = ''
+param genevaKeyVaultSecretName string = ''
+param genevaConfigVersion string = ''
+param genevaGcsAccount string = ''
+param genevaGcsAuthId string = ''
+param genevaGcsEnvironment string = ''
+param genevaGcsNamespace string = ''
+param genevaTenant string = ''
+
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
@@ -77,6 +91,7 @@ module api './app/api.bicep' = {
     allowedOrigins: [ web.outputs.SERVICE_WEB_URI ]
     appSettings: {
       AZURE_SQL_CONNECTION_STRING_KEY: sqlServer.outputs.connectionStringKey
+      WEBSITE_FIRST_PARTY_ID: 'AntMDS'
     }
   }
 }
@@ -115,9 +130,9 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
     location: location
     tags: tags
     sku: {
-      name: 'Y1'
-      tier: 'Dynamic'
+      name: 'P1v2'
     }
+    reserved: true
   }
 }
 
@@ -141,6 +156,8 @@ module keyVault './core/security/keyvault.bicep' = {
     location: location
     tags: tags
     principalId: principalId
+    enabledForDeployment: true
+    enabledForTemplateDeployment: true
   }
 }
 
@@ -154,6 +171,28 @@ module monitoring './core/monitor/monitoring.bicep' = {
     logAnalyticsName: !empty(logAnalyticsName) ? logAnalyticsName : '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
     applicationInsightsName: !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
     applicationInsightsDashboardName: !empty(applicationInsightsDashboardName) ? applicationInsightsDashboardName : '${abbrs.portalDashboards}${resourceToken}'
+  }
+}
+
+resource environmentSecretsKeyVault 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
+  scope: resourceGroup(genevaKeyVaultSubscriptionId, genevaKeyVaultResourceGroupName)
+  name: genevaKeyVaultName
+}
+
+// Install Geneva Monitoring Agent on the app service plan
+module monitoringAppServicePlanGeneva './core/monitor/appserviceplan-geneva.bicep' = if (useGenevaAgent)  {
+  name: 'monitoring-appserviceplan-geneva'
+  scope: rg
+  params: {
+    location: location
+    genevaCertContent: environmentSecretsKeyVault.getSecret(genevaKeyVaultSecretName)
+    monitoringConfigVersion: genevaConfigVersion
+    monitoringGcsAccount: genevaGcsAccount
+    monitoringGcsAuthId: genevaGcsAuthId
+    monitoringGcsEnvironment: genevaGcsEnvironment
+    monitoringGcsNamespace: genevaGcsNamespace
+    monitoringTenant: genevaTenant
+    serverFarmName: appServicePlan.outputs.name
   }
 }
 

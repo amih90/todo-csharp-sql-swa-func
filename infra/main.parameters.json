@@ -19,6 +19,36 @@
     },
     "useAPIM": {
       "value": "${USE_APIM=false}"
+    },
+    "useGenevaAgent": {
+      "value": "${USE_GENEVA_AGENT=true}"
+    },
+    "genevaKeyVaultSubscriptionId": {
+      "value": "bc88b123-685c-4a9c-aad8-d1f5359f15e6"
+    },
+    "genevaKeyVaultResourceGroupName": {
+      "value": "Identity"
+    },
+    "genevaKeyVaultName": {
+      "value": "TeamX-Identity-Dev-EUS"
+    },
+    "genevaKeyVaultSecretName": {
+      "value": "Geneva"
+    },
+    "genevaConfigVersion": {
+      "value": "2.1"
+    },
+    "genevaGcsAccount": {
+      "value": "RomeTeamXDev"
+    },
+    "genevaGcsEnvironment": {
+      "value": "Diagnostics Prod"
+    },
+    "genevaGcsNamespace": {
+      "value": "RomeTeamXDev"
+    },
+    "genevaTenant": {
+      "value": "RomeTeamXDev"
     }
   }
 }
